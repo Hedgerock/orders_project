@@ -1,0 +1,17 @@
+# IDE
+.idea/
+*.iml
+
+#Generated diagrams
+docs/diagrams/rendered/
+docs/diagrams/c4/lib/
+
+#PlantUML artifacts
+*.log
+*.tmp
+*.svg
+*.png
+
+# System files
+.DS_Store
+Thumbs.db

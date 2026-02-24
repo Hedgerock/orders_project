@@ -1,0 +1,21 @@
+@startuml
+!include ../lib/C4_Component.puml
+
+Container_Boundary(api, "Core API (Spring Boot)") {
+
+   Component(controller, "OrdersController", "Spring MVC/WebFlux Controller", "HTTP endpoints")
+   Component(service, "OrderService", "Service", "Business operations about orders")
+   Component(paymentClient, "PaymentClient", "HTTP Client", "Integration with payment provider")
+   Component(repo, "OrderRepository", "Repository", "Data access")
+
+   ComponentDb(db, "PostgreSQL", "DB", "orders/payments")
+   Component(queueOut, "EventPublisher", "Kafka Producer", "Publish events")
+}
+
+Rel(controller, service, "calls")
+Rel(service, repo, "calls")
+Rel(service, paymentClient, "calls")
+Rel(repo, db, "read/writes")
+Rel(service, queueOut, "publishes events")
+
+@enduml

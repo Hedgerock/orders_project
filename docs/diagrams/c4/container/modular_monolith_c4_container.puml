@@ -1,5 +1,5 @@
 @startuml
-!include ../lib/c4_Container.puml
+!include ../c4_lib/c4_Container.puml
 
 title Modular Monolith - C4 Container (Single Deploy, Internal Modules)
 

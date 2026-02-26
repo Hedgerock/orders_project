@@ -1,5 +1,5 @@
 @startuml
-!include ../lib/C4_Container.puml
+!include ../c4_lib/C4_Container.puml
 
 title Orders System - Containers
 

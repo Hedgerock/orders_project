@@ -1,5 +1,5 @@
 @startuml
-!include ../lib/C4_Context.puml
+!include ../c4_lib/C4_Context.puml
 
 Person(user, "Customer", "Customer who is creating order")
 System(system, "Orders", "Orders operations API")

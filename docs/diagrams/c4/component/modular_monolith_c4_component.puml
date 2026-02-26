@@ -1,5 +1,5 @@
 @startuml
-!include ../lib/C4_Component.puml
+!include ../c4_lib/C4_Component.puml
 
 title Modular Monolith - C4 Component (Modules + Public Facades + Boundary Enforcement)
 

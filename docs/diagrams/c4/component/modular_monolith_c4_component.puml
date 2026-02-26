@@ -1,0 +1,86 @@
+@startuml
+!include ../c4_lib/C4_Component.puml
+
+title Modular Monolith - C4 Component (Modules + Public Facades + Boundary Enforcement)
+
+Person(customer, "Customer", "Work with UI/API")
+System_Ext(paymentProvider, "Payment Provider", "Internal payment provider (HTTP)")
+System_Ext(notificationGateway, "Notification Gateway", "Email/SMS/Push provider (HTTP/SMTP)")
+
+Container(ui, "Web UI", "React SPA", "Client in browser")
+
+Container_Boundary(application, "Modular Monolith App (Spring boot, single deploy)") {
+
+    ' ============= Orders module =============
+    Boundary(orders, "Orders Module") {
+        Component(ordersController, "OrdersController", "orders.api", "HTTP endpoints: create/get/update order")
+        Component(orderService, "OrderService", "orders.application", "Use cases: createOrder, getOrder, cancel")
+        Component(ordersDomain, "Order Domain Model", "orders.domain", "Entities + business rules")
+        Component(ordersRepo, "OrdersRepository", "orders.infra", "Persistence adapter for orders.*")
+    }
+
+    ' ============= Users module =============
+    Boundary(users, "Users Module") {
+        Component(usersFacade, "UsersFacade", "users.public", "Public API for other modules (read user/profile)")
+        Component(userService, "UserService", "users.application", "Use-cases: getUser, validateUser")
+        Component(usersDomain, "User Domain Model", "users.domain", "Entities + rules")
+        Component(usersRepo, "UserRepository", "users.infra", "Persistence adapter for users.*")
+    }
+
+    ' ============= Payments module =============
+    Boundary(payments, "Payments Module") {
+        Component(paymentsFacade, "PaymentsFacade", "payments.public", "Public API: authorize/capture/refund")
+        Component(paymentService, "PaymentService", "payments.application", "Use-cases: authorizePayment, capture")
+        Component(paymentClient, "PaymentClient", "payments.infra", "HTTP client to Payment Provider")
+        Component(paymentsDomain, "Payment Domain Model", "payments.domain", "Entities + rules")
+        Component(paymentsRepo, "PaymentRepository", "payments.infra", "Persistence adapter for payments.*")
+    }
+
+    ' ============= Notifications module =============
+   Boundary(notifications, "Notification Module") {
+       Component(notificationsFacade, "NotificationsFacade", "notifications.public", "Public API: send notifications")
+       Component(notificationService, "NotificationService", "notifications.application", "Use-cases: sendOrderConfirmation")
+       Component(notificationClient, "NotificationClient", "notifications.infra", "HTTP/SMTP client to Gateway")
+       Component(notificationDomain, "Notification Domain Model", "notifications.domain", "Templates + rules")
+       Component(notificationRepo, "NotificationRepository", "notifications.infra", "Persistence adapter for notifications.*")
+   }
+
+   ' ============= Cross-cutting =============
+   Component(boundaryRules, "Boundary Enforcement", "ArchUnit + Lint Rules", "Prevents cross-module access to internals; allows only ..public.. / ..api..; forbids cycles")
+}
+
+ContainerDb(db, "PostgreSQL", "DB", "Schemas: orders.*, users.*, payments.*, notifications.*")
+
+Rel(customer, ui, "Uses", "HTTPS")
+Rel(ui, ordersController, "Calls", "HTTPS/REST")
+
+Rel(ordersController, orderService, "Calls")
+Rel(orderService, ordersDomain, "Uses")
+Rel(orderService, ordersRepo, "Persists")
+
+Rel(usersFacade, userService, "Calls")
+Rel(userService, usersDomain, "Uses")
+Rel(userService, usersRepo, "Persists")
+
+Rel(paymentsFacade, paymentService, "Calls")
+Rel(paymentService, paymentsDomain, "Uses")
+Rel(paymentService, paymentsRepo, "Persists")
+Rel(paymentService, paymentClient, "Calls")
+Rel(paymentClient, paymentProvider, "HTTPS")
+
+Rel(notificationsFacade, notificationService, "Calls")
+Rel(notificationService, notificationDomain, "Uses")
+Rel(notificationService, notificationRepo, "Persists")
+Rel(notificationService, notificationClient, "Calls")
+Rel(notificationService, notificationGateway, "HTTP/SMTP")
+
+Rel(ordersRepo, db, "JDBC")
+Rel(usersRepo, db, "JDBC")
+Rel(paymentsRepo, db, "JDBC")
+Rel(notificationRepo, db, "JDBC")
+
+Rel(boundaryRules, orders, "Enforces boundaries")
+Rel(boundaryRules, users, "Enforces boundaries")
+Rel(boundaryRules, payments, "Enforces boundaries")
+Rel(boundaryRules, notifications, "Enforces boundaries")
+@enduml

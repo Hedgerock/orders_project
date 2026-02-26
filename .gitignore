@@ -1,10 +1,12 @@
 # IDE
 .idea/
 *.iml
+.vscode/
 
 #Generated diagrams
 docs/diagrams/rendered/
-docs/diagrams/c4/lib/
+orders_server/
+client/
 
 #PlantUML artifacts
 *.log

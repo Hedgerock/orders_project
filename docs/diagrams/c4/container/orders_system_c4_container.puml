@@ -1,0 +1,29 @@
+@startuml
+!include ../c4_lib/C4_Container.puml
+
+title Orders System - Containers
+
+Person(customer, "Customer", "User")
+
+System_Boundary(s1, "Orders System") {
+    Container(web, "Web UI", "React SPA", "Frontend in browser")
+    Container(api, "Core API", "Spring Boot", "Rest API + business logic")
+    Container(worker, "Async Worker", "Spring Boot", "Secondary tasks / consumers")
+
+    ContainerDb(db, "PostgreSQL", "DB", "Orders, payments, statuses")
+    ContainerDb(cache, "Redis", "Cache", "Cache, deduplication, rate-limit")
+    ContainerQueue(kafka, "Kafka", "Queue", "Orders events")
+}
+
+System_Ext(paymentProvider, "Payment Provider", "Payment Provider")
+
+Rel(customer, web, "Work with UI", "HTTPS")
+Rel(web, api, "REST API", "HTTPS")
+Rel(api, db, "CRUD", "JDBC")
+Rel(api, cache, "Cache-Aside", "RESP")
+Rel(api, kafka, "Publishing events", "Kafka protocol")
+Rel(worker, kafka, "Reading events", "Kafka protocol")
+Rel(worker, db, "Status update", "JDBC")
+Rel(api, paymentProvider, "Payment creation", "HTTPS")
+
+@enduml

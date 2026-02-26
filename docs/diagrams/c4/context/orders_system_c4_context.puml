@@ -1,0 +1,15 @@
+@startuml
+!include ../c4_lib/C4_Context.puml
+
+Person(user, "Customer", "Customer who is creating order")
+System(system, "Orders", "Orders operations API")
+
+System_Ext(payment, "Payment service", "External service for payments", "HTTP")
+System_Ext(email, "Email Service", "Sending email for order confirmation")
+
+Rel(user, system, "Create order, check status", "HTTPS")
+Rel(system, email, "Sending email", "SMTP/HTTP")
+Rel(system, payment, "Create payment", "HTTPS")
+
+
+@enduml

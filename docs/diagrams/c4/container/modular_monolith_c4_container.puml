@@ -1,0 +1,27 @@
+@startuml
+!include ../lib/c4_Container.puml
+
+title Modular Monolith - C4 Container (Single Deploy, Internal Modules)
+
+Person(customer, "Customer", "Work with system through the UI/API")
+
+System_Ext(paymentProvider, "Payment Provider", "Internal payment provider (HTTP)")
+System_Ext(notificationGateWay, "Notification Gateway", "Email/SMS/Push provider (HTTP/SMTP)")
+System_Ext(ciPipeline, "CI Pipeline", "Check modular boundaries (ArchUnit/linters) and blocking merge in case violation")
+
+System_Boundary(productPlatform, Product platform) {
+    Container(ui, "Web UI", "React SPA", "Client application in browser")
+    Container(monolithApp, "Modular Monolith App", "Spring Boot", "Single deploy,\nInternal: Orders / Payments / Users / Notifications.\nRelation between modules only through the public facades (..api.. / ..public..).\nBoundaries enforced through ArchUnit + review + ADR")
+    ContainerDb(database, "PostgreSQL", "Single storage.\nRecommended practise: split schemas/tables by modules (orders.*, payments.*, users.*, notifications.*) + forbidden straight cross module accessors except contracts")
+}
+
+Rel(customer, ui, "Work with UI", "HTTPS")
+
+Rel(ui, monolithApp, "REST API", "HTTPS")
+
+Rel(ciPipeline, monolithApp, "Build + tests + ArchUnit + linters (gated)", "CI/CD")
+
+Rel(monolithApp, paymentProvider, "Payment operations", "HTTPS")
+Rel(monolithApp, notificationGateWay, "Sending notifications", "HTTPS/SMTP")
+Rel(monolithApp, database, "Read/Write", JDBC)
+@enduml

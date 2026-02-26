@@ -5,7 +5,6 @@
 #Generated diagrams
 docs/diagrams/rendered/
 docs/diagrams/c4/lib/
-tools/
 orders_server/
 client/
 

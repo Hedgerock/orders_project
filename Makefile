@@ -11,7 +11,7 @@ render-diagrams:
 	java -jar tools/plantuml.jar -tsvg -o ../../rendered $(DIAGRAMS)
 
 check-yaml:
-	yamlling -d "{extends: default, rules: {line-length: disable}}" k8s/
+	yamllint -d "{extends: default, rules: {line-length: disable}}" k8s/
 
 check-k8s: check-yaml
 

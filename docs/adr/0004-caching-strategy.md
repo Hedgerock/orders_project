@@ -5,7 +5,7 @@
 - Owners: Backend Team
 
 ## Context
-Orders are frequently read through the API. Database load is high during peak hours (~18.5 RPS, see ADR-0002)
+Orders are frequently read through the API. Database load is high during peak hours (~18.5 RPS, see [ADR-0002](../adr/0002-BOTEC-calculations.md))
 **Goal**: Accelerate API response times by reducing database queries
 
 ## Decision Drivers
@@ -33,10 +33,6 @@ Use Cache-Aside pattern with Redis
 - Additional logic in application code
 - Risk of stale data if not properly invalidated
 
-## Related ADRs
-- ADR-0001: Non-functional requirements (SLO/SLI)
-- ADR-0002: BOTEC calculations
-
 ## Technical Impact
 - Redis required as external service
 - Monitoring of hit/miss ratio and latency via Prometheus
@@ -47,3 +43,7 @@ Use Cache-Aside pattern with Redis
   - **Latency** (p95 < 5ms for get/set operations)
   - **Memory usage** (track against allocated limits)
   - **Connection errors / timeouts** (target > 0.9)
+
+## Related ADRs
+- [ADR-0001: Non-functional requirements (SLO/SLI)](../adr/0001-non-functional-requirements.md)
+- [ADR-0002: BOTEC calculations](../adr/0002-BOTEC-calculations.md)

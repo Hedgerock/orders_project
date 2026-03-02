@@ -5,6 +5,14 @@ on:
     branches: [ master ]
 
 jobs:
+  install-yamllint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install yamllist
+        run: pip install yamllint
+      - name: Run yamllint
+        run: make check-k8s
   check-diagrams:
     runs-on: windows-latest
     steps:

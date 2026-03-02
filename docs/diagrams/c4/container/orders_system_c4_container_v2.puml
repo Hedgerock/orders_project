@@ -1,0 +1,40 @@
+@startuml
+!include ../c4_lib/C4_Container.puml
+
+title Orders System - Containers V2
+
+Person(customer, "Customer", "User")
+
+System_Boundary(s1, "Orders System") {
+    Container(web, "Web UI", "React SPA", "Frontend in browser")
+    Container(api, "Core API", "Spring Boot", "Rest API + business logic")
+    Container(worker, "Async Worker", "Spring Boot", "Secondary tasks / consumers")
+
+    ContainerDb(db, "PostgreSQL", "DB", "Orders, payments, statuses")
+    ContainerDb(cache, "Redis", "Cache", "Cache, deduplication, rate-limit")
+    ContainerQueue(kafka, "Kafka", "Queue", "Orders events")
+
+    Container(lb, "L7 Load Balancer / Ingress", "NGINX/ENVOY", "Entry point, SSL termination and routing")
+    Container(gateway, "API Gateway", "Kong/Apigee", "Routing, auth, quotas, observability hooks")
+    Container(rateLimiter, "Rate Limiter", "Redis-backed", "Protect routes, per-user/apiKey policies")
+    Container(obs, "Observability", "Prometheus + Loki + Jaeger", "Metrics, logs, traces")
+}
+
+System_Ext(paymentProvider, "Payment Provider", "Payment Provider")
+
+Rel(customer, web, "Work with UI", "HTTPS")
+Rel(web, lb, "HTTPS traffic")
+Rel(lb, gateway, "Forward requests", "HTTPS")
+Rel(gateway, rateLimiter, "Check limits", "RESP")
+Rel(gateway, api, "Rest API calls", "HTTPS")
+Rel(api, db, "CRUD", "JDBC")
+Rel(api, cache, "Cache-Aside", "RESP")
+Rel(api, kafka, "Publishing events", "Kafka protocol")
+Rel(worker, kafka, "Reading events", "Kafka protocol")
+Rel(worker, db, "Status update", "JDBC")
+Rel(api, paymentProvider, "Payment creation", "HTTPS")
+Rel(gateway, obs, "Emit metrics/logs/traces")
+Rel(api, obs, "Emit metrics/logs/traces")
+Rel(worker, obs, "Emit metrics/logs/traces")
+Rel(web, obs, "Frontend metrics/logs")
+@enduml

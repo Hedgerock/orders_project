@@ -23,6 +23,15 @@ Selected module monolith as main architecture model
 - **Microservices**
  + Pluses: High scaling, independent deployments, technology flexibility
  - Minuses: Serious expenses on DevOps, infrastructure complication, increasing requirements to the team
+### Pros
+- High scaling
+- independent deployments
+- technology flexibility
+
+### Cons
+- Serious expenses on DevOps
+- infrastructure complication 
+- increasing requirements to the team
 
 ## Consequences
 ### Pros
@@ -41,10 +50,6 @@ Selected module monolith as main architecture model
 - Logging and monitoring centralized
 - Limited flexibility in technology selection (single stack)
 
-## Related ADRs
-- ADR-0001: Non-functional requirements (SLO/SLI)
-- ADR-0002: BOTEC calculations
-
 ## Diagram Validation
 
 All C4 diagrams must be validated before merging:
@@ -56,3 +61,7 @@ All C4 diagrams must be validated before merging:
 - Define module boundaries inside the monolith
 - Configure CI/CD pipeline and monitoring setup
 - Specify and document criteria for decision revision (e.g, team growing > 15 developers, or load > X requests/sec)
+
+## Related ADRs
+- [ADR-0001: Non-functional requirements (SLO/SLI)](../adr/0001-non-functional-requirements.md)
+- [ADR-0002: BOTEC calculations](../adr/0002-BOTEC-calculations.md)

@@ -6,7 +6,7 @@
 
 ## Context
 System must guarantee reliable delivery of domain events (e.g., OrderCreated, PaymentProcessed) to external consumers.
-See ADR-0002 for load calculations, event volume expected to correlate with order creation (~ 400k/day)
+See [ADR-0002](../adr/0002-BOTEC-calculations.md) for load calculations, event volume expected to correlate with order creation (~ 400k/day)
 
 ## Decision Drivers
 - Guarantee event delivery even under failures
@@ -45,7 +45,7 @@ Use Outbox pattern with background processor to publish events to message broker
     - **Failed deliveries** (SLO: error rate < 0.1%)
 
 ## Related ADRs
-- ADR-0001: Non-functional requirements (SLO/SLI) 
-- ADR-0002: BOTEC calculations 
-- ADR-0003: Project architecture
-- ADR-0004: Caching strategy
+- [ADR-0001: Non-functional requirements (SLO/SLI)](../adr/0001-non-functional-requirements.md) 
+- [ADR-0002: BOTEC calculations](../adr/0002-BOTEC-calculations.md) 
+- [ADR-0003: Project architecture](../adr/0003-project-architecture.md)
+- [ADR-0004: Caching strategy](../adr/0004-caching-strategy.md)

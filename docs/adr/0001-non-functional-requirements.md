@@ -32,8 +32,8 @@
   - Definition: All key actions must be logged and metrics collected
   - Method: Structured logging + tracing
   - Latency measurement points:
-    - Edge/Gateway -> defines SLO (user-facing latency)
-    - Inside service -> diagnostic metrics (DB queries, external calls)
+    - Edge/Gateway → defines SLO (user-facing latency)
+    - Inside service → diagnostic metrics (DB queries, external calls)
   - PromQL Example:
   ```promql
   histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))

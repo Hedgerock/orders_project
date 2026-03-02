@@ -1,0 +1,17 @@
+@startuml
+
+actor User
+participant Gateway
+participant WorkerQueue
+participant Metrics
+participant HPA
+
+User -> Gateway: Increased traffic
+Gateway -> WorkerQueue: Requests accumulate
+WorkerQueue -> Metrics: Queue length / latency grows
+Metrics -> HPA: Signal (CPU + RPS + latency)
+HPA -> Gateway: Scale out (add replicas)
+Gateway -> User: Response stabilize
+note over Gateway: p95 latency returns to normal
+
+@enduml

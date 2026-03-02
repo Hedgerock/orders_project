@@ -1,0 +1,22 @@
+@startuml
+
+actor User
+participant OrderService
+participant PaymentProvider
+participant CircuitBreaker
+participant Logger
+
+User -> OrderService: Create order
+OrderService -> PaymentProvider: Payment request
+PaymentProvider --> OrderService: Timeout / error
+OrderService -> CircuitBreaker: Check state
+alt Retry policy
+    OrderService -> PaymentProvider: Limited retries
+    PaymentProvider --> OrderService: Still failing
+end
+CircuitBreaker -> OrderService: Open circuit
+OrderService -> User: Return "Payment temporarily unavailable"
+OrderService -> Logger: Log error + metrics (timeouts, retries, CB state)
+note over OrderService: Alert triggered for degraded provider
+
+@enduml
